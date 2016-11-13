@@ -10,9 +10,9 @@ inst(){
 }
 # Launching Function - seperate shells, diffrent processes
 launch(){
-	echo "Opening Server"
+	echo "Opening Server..."
 	gnome-terminal -e "python sysSpecs.py server"
-	echo "Opening Client"
+	echo "Opening Client..."
 	gnome-terminal -e "python sysSpecs.py client"
 }
 

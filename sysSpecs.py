@@ -8,6 +8,7 @@ from datetime import timedelta
 import time
 import argparse
 import netifaces
+import os
 
 
 PORT=8021
@@ -29,13 +30,23 @@ def client(): # Client simulate a listenr on the selected port, also in broadcas
 	server_address = ('', PORT)
 	print >>sys.stderr, 'starting up on %s port %s' % server_address
 	sock.bind(server_address)
-
+	counter=0
 
 	while True:
-		print >>sys.stderr, '\nwaiting to receive message'
-		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes		
-		print >>sys.stderr, 'received %s bytes from %s' % (len(data), address)
-		print >>sys.stderr, data
+		
+		print >>sys.stderr, '\nwaiting to receive message...'
+		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes
+		os.system('clear')
+		data=json.loads(data)
+		counter=counter+1;
+		print ("Information Recieved #%d\n"%counter)	
+		print >>sys.stderr, 'received %s bytes from %s\n' % (len(data), address)		
+		
+		print "{:<13} {:<20}".format('Key','Label')
+		print "{:<13} {:<20}".format('---','---')
+		for key, label in data.iteritems():
+			print "{:<13} {:<20}".format(key, label)
+		
 
 
 def getValues(): #A function that concentrade all the data gathering
