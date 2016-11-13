@@ -13,8 +13,7 @@ import netifaces
 PORT=8021
 
 
-def server():		
-	
+def server():# Server responsible for aquiring and broadcasting the information	
 	while True:
 		try:
 			data=getValues()
@@ -25,7 +24,7 @@ def server():
 		time.sleep(2) # delays for 2 seconds
 		
 	
-def client():
+def client(): # Client simulate a listenr on the selected port, also in broadcasting,printing the aquired json
 	# Bind the socket to the port
 	server_address = ('', PORT)
 	print >>sys.stderr, 'starting up on %s port %s' % server_address
@@ -34,25 +33,25 @@ def client():
 
 	while True:
 		print >>sys.stderr, '\nwaiting to receive message'
-		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes
-		
+		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes		
 		print >>sys.stderr, 'received %s bytes from %s' % (len(data), address)
 		print >>sys.stderr, data
-		#data=json.loads(data)
-		#for key in data:
-			#print key, 'corresponds to', d[key]
 
 
-def getValues():
+def getValues(): #A function that concentrade all the data gathering
 	
-	info = cpuinfo.get_cpu_info()
+	try:
+		info = cpuinfo.get_cpu_info()
+	except:
+		print ("cant get cpu values - cpuinfo lib")
+	
 	model=info['brand'] #cpuinfo - model
 	clockSpeed=info['hz_actual']#cpu info - clock speed
 	cpuLoad = psutil.cpu_percent(interval=1)  #psutil - cpu load in percent
 	totalMem=psutil.virtual_memory().total #total memory
 	virtualMem=psutil.virtual_memory().percent #Memory loadm, Percentage
 	numCore=psutil.cpu_count(logical=False) #Number of cores without logical
-	kernel=platform.platform()
+	kernel=platform.platform() # kernel version
 	#uptime
 	with open('/proc/uptime', 'r') as f:
 		uptime_seconds = float(f.readline().split()[0])
@@ -70,11 +69,10 @@ def getValues():
    
 	}
 	dic=getInterfaces()
-	data.update(dic)
+	data.update(dic) #fusing the two dictionaries into one for sending
 	return data
 
-def getInterfaces():
-	
+def getInterfaces(): #Return Dictionary with Iterfaces and thier MAC's
 	data= netifaces.interfaces()
 	dic={}
 	for x in data:
@@ -84,7 +82,7 @@ def getInterfaces():
 	return dic
 
 
-def sendValues(data):
+def sendValues(data): #Launch Values over UDP broadcast
 	
 	
 	#server_address = ('localhost', 8021)
@@ -111,7 +109,7 @@ except:
 print(sys.argv[1])
 
 try:
-	if sys.argv[1]=="server":
+	if sys.argv[1]=="server": #value from shell, activate accourdingly
 		server()
 	elif sys.argv[1]=="client":
 		client()
