@@ -10,7 +10,6 @@ import argparse
 
 PORT=8021
 
-#parser = argparse.ArgumentParser()
 
 def server():		
 	
@@ -25,9 +24,6 @@ def server():
 		
 	
 def client():
-	# Create a TCP/IP socket
-	#sock = socket(AF_INET, SOCK_DGRAM)
-
 	# Bind the socket to the port
 	server_address = ('', PORT)
 	print >>sys.stderr, 'starting up on %s port %s' % server_address
@@ -36,30 +32,19 @@ def client():
 
 	while True:
 		print >>sys.stderr, '\nwaiting to receive message'
-		data, address = sock.recvfrom(4096)
-		#strData=json.loads(data)
+		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes
 		print >>sys.stderr, 'received %s bytes from %s' % (len(data), address)
 		print >>sys.stderr, data
-		
-		#if data:
-			#sent = sock.sendto(data, address)
-		   # print >>sys.stderr, 'sent %s bytes back to %s' % (sent, address)
 
-
-
-
-# psutil installation:
-#sudo apt-get install gcc python-dev python-pip
-#pip install psutil
 
 def getValues():
 	
 	info = cpuinfo.get_cpu_info()
-	model=info['brand'] #print('Model: {0}'.format(info['brand']))   #cpuinfo - model
-	clockSpeed=info['hz_actual'] #print('Clock Speed: {0}'.format(info['hz_actual'])) #cpu info - clock speed
+	model=info['brand'] #cpuinfo - model
+	clockSpeed=info['hz_actual']#cpu info - clock speed
 	cpuLoad = psutil.cpu_percent(interval=1)  #psutil - cpu load in percent
 	totalMem=psutil.virtual_memory().total #total memory
-	virtualMem=psutil.virtual_memory().percent
+	virtualMem=psutil.virtual_memory().percent #Memory loadm, Percentage
 	numCore=psutil.cpu_count(logical=False) #Number of cores without logical
 	kernel=platform.platform()
 	#uptime
@@ -93,10 +78,7 @@ def sendValues(data):
 		# Send data
 		print >>sys.stderr, 'sending "%s"' % message
 		sock.sendto(message, ('255.255.255.255', PORT)) #Broadcast Transmission
-		# Receive response
-		#print >>sys.stderr, 'waiting to receive'
-		#data, server = sock.recvfrom(4096)
-		#print >>sys.stderr, 'received "%s"' % data
+
 
 	except:
 		print ('Sending Failure')
@@ -120,21 +102,4 @@ try:
 except:
 	sock.close()
 	print("Socket Close, GoodBye")
-	
-
-
-
-
-
-#print(uptime_string)
-#json_str = json.dumps(data) #encode string into json ??
-#print(json_str)
-#print('....After....')
-#data = json.loads(json_str)	#decode json into string ??
-#json, json.dumps(), json.loads()
-#json.dumps(['table',{"name":"yoni,"surname":"harir","phone":"0542290705"}])
-#Sending Over UDP
-# Create a UDP socket
-
-
 

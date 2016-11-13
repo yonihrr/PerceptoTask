@@ -4,6 +4,7 @@
 inst(){
 	sudo pip install psutil;
 	sudo pip install py-cpuinfo;
+	sudo pip install netifaces;
 	
 }
 
