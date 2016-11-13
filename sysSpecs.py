@@ -7,6 +7,8 @@ from socket import *
 from datetime import timedelta
 import time
 import argparse
+import netifaces
+
 
 PORT=8021
 
@@ -33,8 +35,12 @@ def client():
 	while True:
 		print >>sys.stderr, '\nwaiting to receive message'
 		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes
+		
 		print >>sys.stderr, 'received %s bytes from %s' % (len(data), address)
 		print >>sys.stderr, data
+		#data=json.loads(data)
+		#for key in data:
+			#print key, 'corresponds to', d[key]
 
 
 def getValues():
@@ -63,7 +69,19 @@ def getValues():
 		'kernel':kernel
    
 	}
+	dic=getInterfaces()
+	data.update(dic)
 	return data
+
+def getInterfaces():
+	
+	data= netifaces.interfaces()
+	dic={}
+	for x in data:
+		addrs = netifaces.ifaddresses(x)
+		entry=addrs[netifaces.AF_LINK]
+		dic[x] = entry
+	return dic
 
 
 def sendValues(data):
