@@ -36,13 +36,12 @@ def client(): # Client simulate a listenr on the selected port, also in broadcas
 		
 		print >>sys.stderr, '\nwaiting to receive message...'
 		data, address = sock.recvfrom(4096) #Listeninig 4096 bytes
-		os.system('clear')
-		data=json.loads(data)
-		counter=counter+1;
+		os.system('clear') #clear screen
+		data=json.loads(data) #back to dictionary
+		counter=counter+1; #counter numbers of recieving
 		print ("Information Recieved #%d\n"%counter)	
-		print >>sys.stderr, 'received %s bytes from %s\n' % (len(data), address)		
-		
-		print "{:<13} {:<20}".format('Key','Label')
+		print >>sys.stderr, 'received %s bytes from %s\n' % (len(data), address)				
+		print "{:<13} {:<20}".format('Key','Label') #printing as table
 		print "{:<13} {:<20}".format('---','---')
 		for key, label in data.iteritems():
 			print "{:<13} {:<20}".format(key, label)
@@ -67,7 +66,7 @@ def getValues(): #A function that concentrade all the data gathering
 	with open('/proc/uptime', 'r') as f:
 		uptime_seconds = float(f.readline().split()[0])
 		uptime_string = str(timedelta(seconds = uptime_seconds))
-
+	# saving data as dictionary, for future transfer as json
 	data = {
 		'Model' : model,
 		'Clock' : clockSpeed,
